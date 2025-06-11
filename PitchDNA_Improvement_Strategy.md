@@ -1,11 +1,11 @@
 
-# 🔧 Opportunities for Improvement: Beyond KNN Classification
+# Opportunities for Improvement: Beyond KNN Classification
 
-While the original project successfully leveraged a **K-Nearest Neighbors (KNN)** classifier to label pitch types with high accuracy (~97%), there are multiple areas where this approach can be expanded, refined, and made more interactive for exploratory and performance-focused use cases — especially in the context of your *PitchDNA* system. Below is a breakdown of actionable improvements and innovations.
+While the original project successfully leveraged a **K-Nearest Neighbors (KNN)** classifier to label pitch types with high accuracy (~97%), there are multiple areas where this approach can be expanded, refined, and made more interactive for exploratory and performance-focused use cases — especially in the context of my *PitchDNA* system. Below is a breakdown of actionable improvements and innovations.
 
 ---
 
-## 📈 1. Dimensionality Reduction with UMAP for Visualization & Insights
+## 1. Dimensionality Reduction with UMAP for Visualization & Insights
 
 **Why?**  
 Pitch data lives in a high-dimensional feature space (speed, spin, movement, etc.). While this is great for modeling, it makes **intuition and pattern recognition difficult**.
@@ -17,26 +17,9 @@ Pitch data lives in a high-dimensional feature space (speed, spin, movement, etc
   - **Spot outliers** or ambiguous pitches.
   - Help players/coaches understand how a pitch compares to MLB norms.
 
-**In Your App:**
-- You've already added UMAP to PitchDNA—now you can **color by pitch type** or even **overlay decision boundaries** for real-time interpretation.
-
 ---
 
-## 🧠 2. Switch From KNN to More Robust Models
-
-**Why?**  
-KNN is a simple algorithm that can be **sensitive to noise** and scales poorly as data grows.
-
-**Improvement Options:**
-- **Random Forest**: Handles nonlinear boundaries better; gives feature importance.
-- **XGBoost or LightGBM**: Great for tabular classification with improved accuracy and control.
-- **Neural Networks (MLP)**: More adaptable and can learn abstract relationships across pitch types.
-
-You could even ensemble these methods and **compare model agreement** to identify uncertainty zones.
-
----
-
-## 🔍 3. Feature Engineering
+## 2. Feature Engineering
 
 **Why?**  
 The model only uses a handful of raw statcast features. But pitch behavior is **complex and influenced by derived attributes.**
@@ -53,10 +36,10 @@ Better features = more signal → better classification and similarity results.
 
 ---
 
-## 🔬 4. Combine Classification with Similarity Search
+## 3. Combine Classification with Similarity Search
 
 **Why?**  
-KNN is currently used just for classification. But your PitchDNA concept expands this into **pitch comparability**, which is a much more powerful, player-facing tool.
+KNN is currently used just for classification. But my PitchDNA concept expands this into **pitch comparability**, which is a much more powerful, player-facing tool.
 
 **How to Improve:**
 - After predicting a pitch type, use **KNN or UMAP proximity** to find the **most similar existing pitches** in the MLB database.
@@ -65,7 +48,7 @@ KNN is currently used just for classification. But your PitchDNA concept expands
 
 ---
 
-## 🧪 5. Model Confidence and Interpretability
+## 4. Model Confidence and Interpretability
 
 **Why?**  
 A good model doesn’t just output labels — it explains its choices.
@@ -78,7 +61,7 @@ This empowers users to **trust and learn from the model.**
 
 ---
 
-## 🧠 6. Predict or Suggest Ideal Pitch Archetypes
+## 5. Predict or Suggest Ideal Pitch Archetypes
 
 Long-term, you can extend the model to **recommend how a pitcher's pitch could evolve** (e.g., "Your slider is closest to [X], but adding 3 inches of horizontal break would make it closer to [MLB All-Star Y].").
 
@@ -88,4 +71,4 @@ This adds **training value and progression tracking**—a big selling point for 
 
 ## 🚀 Final Thoughts
 
-The baseline KNN model offers a solid foundation, but the future of pitch analysis lies in **interpretability, interactivity, and insight**. Your PitchDNA system is on the right path by combining visual tools, similarity engines, and player comparisons in a way that transforms raw pitch data into meaningful feedback.
+The baseline KNN model offers a solid foundation, but the future of pitch analysis lies in **interpretability, interactivity, and insight**. My PitchDNA system is on the right path by combining visual tools, similarity engines, and player comparisons in a way that transforms raw pitch data into meaningful feedback.
