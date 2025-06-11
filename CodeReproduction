@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""
+Reproduce the Analytics Vidhya medium project:
+- Load Statcast-derived pitch dataset
+- Train a KNN classifier to label pitch types
+- Use optimal k for predictions on unlabeled data
+"""
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. Load and clean data
+df = pd.read_csv("pitcher_data.csv")  # ensure file path
+df = df.dropna(subset=['Pitch_Name', 'Release_Speed', 'Spin_Rate', 'Break_X', 'Break_Z'])
+
+# 2. Define features and label
+features = ['Release_Speed', 'Spin_Rate', 'Break_X', 'Break_Z']
+X = df[features]
+y = df['Pitch_Name']
+
+# 3. Split train/test
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=42, stratify=y
+)
+
+# 4. Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 5. Find best k
+def find_best_k(X_tr, y_tr, X_te, y_te, ks=range(1, 16)):
+    scores = {}
+    for k in ks:
+        knn = KNeighborsClassifier(n_neighbors=k)
+        knn.fit(X_tr, y_tr)
+        p = knn.predict(X_te)
+        scores[k] = accuracy_score(y_te, p)
+    return max(scores, key=scores.get), scores
+
+best_k, results = find_best_k(X_train_scaled, y_train, X_test_scaled, y_test)
+print(f"✅ Best k: {best_k}")
+print(pd.Series(results).sort_values(ascending=False))
+
+# 6. Train final model and evaluate
+knn_final = KNeighborsClassifier(n_neighbors=best_k)
+knn_final.fit(X_train_scaled, y_train)
+y_pred = knn_final.predict(X_test_scaled)
+
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+cm = confusion_matrix(y_test, y_pred, labels=knn_final.classes_)
+plt.figure(figsize=(8,6))
+sns.heatmap(cm, annot=True, fmt='d', xticklabels=knn_final.classes_, yticklabels=knn_final.classes_)
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
+plt.tight_layout()
+plt.savefig("knn_confusion_matrix.png")
+print("🔍 Confusion matrix saved to knn_confusion_matrix.png")
+
+# 7. Label missing Pitch_Name
+df_missing = df[df['Pitch_Name'].isna()].copy()
+if not df_missing.empty:
+    X_missing = scaler.transform(df_missing[features])
+    df_missing['Pitch_Name'] = knn_final.predict(X_missing)
+    df.loc[df['Pitch_Name'].isna(), 'Pitch_Name'] = df_missing['Pitch_Name']
+
+# 8. Export cleaned DataFrame
+df.to_csv("pitcher_data_labeled.csv", index=False)
+print("🧹 Completed: missing Pitch_Name labels filled and saved.")
